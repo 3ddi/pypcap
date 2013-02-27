@@ -12,7 +12,9 @@ import re
 
 from Pyrex.Compiler import Scanning
 
-Scanning.pickle_lexicon = lambda: print "Fooooooooooooooo"
+def pickle_lexicon():
+    print "Foooooooo"
+Scanning.pickle_lexicon = pickle_lexicon
 
 def recursive_search_dirs(dirs, target_files):
     for d in dirs:
