@@ -45,17 +45,22 @@ for d in dirs:
         print "pcap.h not found"
         sys.exit(1)
 
+print "XXXXXXXXXXXXXXXXXXXXX"
+
 include_dirs = os.path.dirname(pcap_h)
 lib_sub_dirs = [os.path.join(d, sub_dir) \
         for sub_dir in ('lib', 'lib64', \
         'lib/x86_64-linux-gnu', 'lib/i386-linux-gnu', '')]
 
+print "XXXXXXXXXXXXXXXXXXXXX"
 lib_files = [
         'libpcap.a',
         'libpcap.so',
         'libpcap.dylib',
         'wpcap.lib'
 ]
+
+print "XXXXXXXXXXXXXXXXXXXXX"
 lib_file_path = recursive_search_dirs(lib_sub_dirs, lib_files)
 
 print "Found libraries in %s" % lib_file_path
@@ -70,6 +75,7 @@ elif lib_file == "wpcap.lib":
     extra_compile_args = ['-DWIN32', '-DWPCAP']
 
 define_macros = []
+print "XXXXXXXXXXXXXXXXXXXXX"
 
 if recursive_search_dirs(dirs, ['pcap-int.h']):
         define_macros.append(('HAVE_PCAP_INT_H', 1))
@@ -89,6 +95,7 @@ else:
 #         define_macros.append(('HAVE_PCAP_SETNONBLOCK', 1))
 # 
 
+print "XXXXXXXXXXXXXXXXXXXXX"
 pcap = Extension(
     name='pcap',
     sources=['pcap.pyx', 'pcap_ex.c'],
@@ -98,6 +105,7 @@ pcap = Extension(
     extra_compile_args=extra_compile_args,
 )
 
+print "XXXXXXXXXXXXXXXXXXXXX"
 setup(
     name='pypcap',
     version='1.1.1',
