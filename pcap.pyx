@@ -100,13 +100,16 @@ cdef struct pcap_handler_ctx:
     void *args
     int   got_exc
 
+cdef double __get_timestamp(pcap_pkthdr *hdr):
+    return (hdr.ts.tv_sec * 1000.0)  + (hdr.ts.tv_usec / 1000.0)
+
 cdef void __pcap_handler(void *arg, pcap_pkthdr *hdr, char *pkt):
     cdef pcap_handler_ctx *ctx
     cdef int gil
     ctx = <pcap_handler_ctx *>arg
     gil = PyGILState_Ensure()
     try:
-        (<object>ctx.callback)((hdr.ts.tv_sec * 1000.0)  + (hdr.ts.tv_usec / 1000.0),
+        (<object>ctx.callback)(__get_timestamp(hdr),
                                PyBuffer_FromMemory(pkt, hdr.caplen),
                                *(<object>ctx.args))
     except:
@@ -332,7 +335,7 @@ cdef class pcap:
             n = pcap_ex_next(self.__pcap, &hdr, &pkt)
             Py_END_ALLOW_THREADS
             if n == 1:
-                callback(hdr.ts.tv_sec + (hdr.ts.tv_usec / 1000000.0),
+                callback(__get_timestamp(hdr),
                          PyBuffer_FromMemory(pkt, hdr.caplen), *args)
             elif n == 0:
                 break
@@ -376,7 +379,7 @@ cdef class pcap:
             n = pcap_ex_next(self.__pcap, &hdr, &pkt)
             Py_END_ALLOW_THREADS
             if n == 1:
-                return (hdr.ts.tv_sec + (hdr.ts.tv_usec / 1000000.0),
+                return (__get_timestamp(hdr),
                         PyBuffer_FromMemory(pkt, hdr.caplen))
             elif n == 0:
                 return None
