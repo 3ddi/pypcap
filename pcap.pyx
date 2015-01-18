@@ -106,7 +106,7 @@ cdef void __pcap_handler(void *arg, pcap_pkthdr *hdr, char *pkt):
     ctx = <pcap_handler_ctx *>arg
     gil = PyGILState_Ensure()
     try:
-        (<object>ctx.callback)(hdr.ts.tv_sec + (hdr.ts.tv_usec/1000000.0),
+        (<object>ctx.callback)((hdr.ts.tv_sec * 1000.0)  + (hdr.ts.tv_usec / 1000.0),
                                PyBuffer_FromMemory(pkt, hdr.caplen),
                                *(<object>ctx.args))
     except:
