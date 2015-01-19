@@ -100,8 +100,8 @@ cdef struct pcap_handler_ctx:
     void *args
     int   got_exc
 
-cdef double __get_timestamp(pcap_pkthdr *hdr):
-    return (hdr.ts.tv_sec * 1000.0)  + (hdr.ts.tv_usec / 1000.0)
+cdef long int __get_timestamp(pcap_pkthdr *hdr):
+    return (hdr.ts.tv_sec * 1000 + hdr.ts.tv_usec / 1000)
 
 cdef void __pcap_handler(void *arg, pcap_pkthdr *hdr, char *pkt):
     cdef pcap_handler_ctx *ctx

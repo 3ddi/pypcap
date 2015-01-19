@@ -555,6 +555,8 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_GetAttrStr(PyObject* obj, PyObject
 
 static PyObject *__Pyx_GetBuiltinName(PyObject *name);
 
+static CYTHON_INLINE long __Pyx_div_long(long, long); /* proto */
+
 #if CYTHON_COMPILING_IN_CPYTHON
 static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw);
 #else
@@ -658,11 +660,11 @@ static void __Pyx_AddTraceback(const char *funcname, int c_line,
 
 static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level);
 
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
+
 static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *);
 
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
-
-static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_unsigned_int(unsigned int value);
 
@@ -676,7 +678,7 @@ static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 /* Module declarations from 'pcap' */
 static PyTypeObject *__pyx_ptype_4pcap_bpf = 0;
 static PyTypeObject *__pyx_ptype_4pcap_pcap = 0;
-static double __pyx_f_4pcap___get_timestamp(struct pcap_pkthdr *); /*proto*/
+static long __pyx_f_4pcap___get_timestamp(struct pcap_pkthdr *); /*proto*/
 static void __pyx_f_4pcap___pcap_handler(void *, struct pcap_pkthdr *, char *); /*proto*/
 #define __Pyx_MODULE_NAME "pcap"
 int __pyx_module_is_main_pcap = 0;
@@ -929,31 +931,31 @@ static PyObject *__pyx_codeobj__11;
 /* "pcap.pyx":103
  *     int   got_exc
  * 
- * cdef double __get_timestamp(pcap_pkthdr *hdr):             # <<<<<<<<<<<<<<
- *     return (hdr.ts.tv_sec * 1000.0)  + (hdr.ts.tv_usec / 1000.0)
+ * cdef long int __get_timestamp(pcap_pkthdr *hdr):             # <<<<<<<<<<<<<<
+ *     return (hdr.ts.tv_sec * 1000 + hdr.ts.tv_usec / 1000)
  * 
  */
 
-static double __pyx_f_4pcap___get_timestamp(struct pcap_pkthdr *__pyx_v_hdr) {
-  double __pyx_r;
+static long __pyx_f_4pcap___get_timestamp(struct pcap_pkthdr *__pyx_v_hdr) {
+  long __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get_timestamp", 0);
 
   /* "pcap.pyx":104
  * 
- * cdef double __get_timestamp(pcap_pkthdr *hdr):
- *     return (hdr.ts.tv_sec * 1000.0)  + (hdr.ts.tv_usec / 1000.0)             # <<<<<<<<<<<<<<
+ * cdef long int __get_timestamp(pcap_pkthdr *hdr):
+ *     return (hdr.ts.tv_sec * 1000 + hdr.ts.tv_usec / 1000)             # <<<<<<<<<<<<<<
  * 
  * cdef void __pcap_handler(void *arg, pcap_pkthdr *hdr, char *pkt):
  */
-  __pyx_r = ((__pyx_v_hdr->ts.tv_sec * 1000.0) + (__pyx_v_hdr->ts.tv_usec / 1000.0));
+  __pyx_r = ((__pyx_v_hdr->ts.tv_sec * 1000) + __Pyx_div_long(__pyx_v_hdr->ts.tv_usec, 1000));
   goto __pyx_L0;
 
   /* "pcap.pyx":103
  *     int   got_exc
  * 
- * cdef double __get_timestamp(pcap_pkthdr *hdr):             # <<<<<<<<<<<<<<
- *     return (hdr.ts.tv_sec * 1000.0)  + (hdr.ts.tv_usec / 1000.0)
+ * cdef long int __get_timestamp(pcap_pkthdr *hdr):             # <<<<<<<<<<<<<<
+ *     return (hdr.ts.tv_sec * 1000 + hdr.ts.tv_usec / 1000)
  * 
  */
 
@@ -964,7 +966,7 @@ static double __pyx_f_4pcap___get_timestamp(struct pcap_pkthdr *__pyx_v_hdr) {
 }
 
 /* "pcap.pyx":106
- *     return (hdr.ts.tv_sec * 1000.0)  + (hdr.ts.tv_usec / 1000.0)
+ *     return (hdr.ts.tv_sec * 1000 + hdr.ts.tv_usec / 1000)
  * 
  * cdef void __pcap_handler(void *arg, pcap_pkthdr *hdr, char *pkt):             # <<<<<<<<<<<<<<
  *     cdef pcap_handler_ctx *ctx
@@ -1025,7 +1027,7 @@ static void __pyx_f_4pcap___pcap_handler(void *__pyx_v_arg, struct pcap_pkthdr *
  *                                PyBuffer_FromMemory(pkt, hdr.caplen),
  *                                *(<object>ctx.args))
  */
-      __pyx_t_4 = PyFloat_FromDouble(__pyx_f_4pcap___get_timestamp(__pyx_v_hdr)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 112; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      __pyx_t_4 = __Pyx_PyInt_From_long(__pyx_f_4pcap___get_timestamp(__pyx_v_hdr)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 112; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       __Pyx_GOTREF(__pyx_t_4);
 
       /* "pcap.pyx":113
@@ -1140,7 +1142,7 @@ static void __pyx_f_4pcap___pcap_handler(void *__pyx_v_arg, struct pcap_pkthdr *
   PyGILState_Release(__pyx_v_gil);
 
   /* "pcap.pyx":106
- *     return (hdr.ts.tv_sec * 1000.0)  + (hdr.ts.tv_usec / 1000.0)
+ *     return (hdr.ts.tv_sec * 1000 + hdr.ts.tv_usec / 1000)
  * 
  * cdef void __pcap_handler(void *arg, pcap_pkthdr *hdr, char *pkt):             # <<<<<<<<<<<<<<
  *     cdef pcap_handler_ctx *ctx
@@ -3458,7 +3460,7 @@ static PyObject *__pyx_pf_4pcap_4pcap_20loop(struct __pyx_obj_4pcap_pcap *__pyx_
  *                          PyBuffer_FromMemory(pkt, hdr.caplen), *args)
  *             elif n == 0:
  */
-      __pyx_t_1 = PyFloat_FromDouble(__pyx_f_4pcap___get_timestamp(__pyx_v_hdr)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 338; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyInt_From_long(__pyx_f_4pcap___get_timestamp(__pyx_v_hdr)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 338; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_1);
 
       /* "pcap.pyx":339
@@ -4071,7 +4073,7 @@ static PyObject *__pyx_pf_4pcap_4pcap_30__next__(struct __pyx_obj_4pcap_pcap *__
  *             elif n == 0:
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_1 = PyFloat_FromDouble(__pyx_f_4pcap___get_timestamp(__pyx_v_hdr)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 382; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyInt_From_long(__pyx_f_4pcap___get_timestamp(__pyx_v_hdr)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 382; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_1);
 
       /* "pcap.pyx":383
@@ -5922,6 +5924,13 @@ static PyObject *__Pyx_GetBuiltinName(PyObject *name) {
     return result;
 }
 
+static CYTHON_INLINE long __Pyx_div_long(long a, long b) {
+    long q = a / b;
+    long r = a - q*b;
+    q -= ((r != 0) & ((r ^ b) < 0));
+    return q;
+}
+
 #if CYTHON_COMPILING_IN_CPYTHON
 static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw) {
     PyObject *result;
@@ -6817,6 +6826,32 @@ bad:
     return module;
 }
 
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
+    const long neg_one = (long) -1, const_zero = 0;
+    const int is_unsigned = neg_one > const_zero;
+    if (is_unsigned) {
+        if (sizeof(long) < sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(long) <= sizeof(unsigned long)) {
+            return PyLong_FromUnsignedLong((unsigned long) value);
+        } else if (sizeof(long) <= sizeof(unsigned long long)) {
+            return PyLong_FromUnsignedLongLong((unsigned long long) value);
+        }
+    } else {
+        if (sizeof(long) <= sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(long) <= sizeof(long long)) {
+            return PyLong_FromLongLong((long long) value);
+        }
+    }
+    {
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        unsigned char *bytes = (unsigned char *)&value;
+        return _PyLong_FromByteArray(bytes, sizeof(long),
+                                     little, !is_unsigned);
+    }
+}
+
 #define __PYX_VERIFY_RETURN_INT(target_type, func_type, func_value)       \
     {                                                                     \
         func_type value = func_value;                                     \
@@ -6955,32 +6990,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value) {
         int one = 1; int little = (int)*(unsigned char *)&one;
         unsigned char *bytes = (unsigned char *)&value;
         return _PyLong_FromByteArray(bytes, sizeof(int),
-                                     little, !is_unsigned);
-    }
-}
-
-static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
-    const long neg_one = (long) -1, const_zero = 0;
-    const int is_unsigned = neg_one > const_zero;
-    if (is_unsigned) {
-        if (sizeof(long) < sizeof(long)) {
-            return PyInt_FromLong((long) value);
-        } else if (sizeof(long) <= sizeof(unsigned long)) {
-            return PyLong_FromUnsignedLong((unsigned long) value);
-        } else if (sizeof(long) <= sizeof(unsigned long long)) {
-            return PyLong_FromUnsignedLongLong((unsigned long long) value);
-        }
-    } else {
-        if (sizeof(long) <= sizeof(long)) {
-            return PyInt_FromLong((long) value);
-        } else if (sizeof(long) <= sizeof(long long)) {
-            return PyLong_FromLongLong((long long) value);
-        }
-    }
-    {
-        int one = 1; int little = (int)*(unsigned char *)&one;
-        unsigned char *bytes = (unsigned char *)&value;
-        return _PyLong_FromByteArray(bytes, sizeof(long),
                                      little, !is_unsigned);
     }
 }
