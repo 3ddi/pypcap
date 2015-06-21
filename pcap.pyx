@@ -18,7 +18,6 @@ __version__ = '1.1'
 
 import sys
 import struct
-from libc.stdlib cimport malloc
 
 cdef extern from "Python.h":
     object PyBuffer_FromMemory(char *s, int len)
@@ -99,6 +98,7 @@ cdef extern from "pcap_ex.h":
 cdef extern from *:
     char *strdup(char *src)
     void  free(void *ptr)
+    void *malloc (size_t size)
     
 cdef struct pcap_handler_ctx:
     void *callback
@@ -277,7 +277,7 @@ cdef class pcap:
         cdef bpf_program fcode
 
         free(self.__filter)
-        self.__filter = "Raw filter"
+        self.__filter = strdup("Raw filter")
         insn_len = len(insn_list)
         fcode.bf_insns = <bpf_insn *>malloc(insn_len * sizeof(bpf_insn))
         if not fcode.bf_insns:

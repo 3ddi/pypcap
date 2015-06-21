@@ -251,8 +251,6 @@ class __Pyx_FakeReference {
 #include <math.h>
 #define __PYX_HAVE__pcap
 #define __PYX_HAVE_API__pcap
-#include "string.h"
-#include "stdlib.h"
 #include "pcap.h"
 #include "pcap_ex.h"
 #ifdef _OPENMP
@@ -452,7 +450,7 @@ struct __pyx_obj_4pcap_bpf;
 struct __pyx_obj_4pcap_pcap;
 struct __pyx_t_4pcap_pcap_handler_ctx;
 
-/* "pcap.pyx":57
+/* "pcap.pyx":56
  *         char *name
  * 
  * ctypedef void (*pcap_handler)(void *arg, pcap_pkthdr *hdr, char *pkt)             # <<<<<<<<<<<<<<
@@ -462,7 +460,7 @@ struct __pyx_t_4pcap_pcap_handler_ctx;
 typedef void (*__pyx_t_4pcap_pcap_handler)(void *, struct pcap_pkthdr *, char *);
 
 /* "pcap.pyx":103
- *     void  free(void *ptr)
+ *     void *malloc (size_t size)
  * 
  * cdef struct pcap_handler_ctx:             # <<<<<<<<<<<<<<
  *     void *callback
@@ -719,10 +717,6 @@ static int __Pyx_check_binary_version(void);
 
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
-
-/* Module declarations from 'libc.string' */
-
-/* Module declarations from 'libc.stdlib' */
 
 /* Module declarations from 'pcap' */
 static PyTypeObject *__pyx_ptype_4pcap_bpf = 0;
@@ -2740,7 +2734,7 @@ static PyObject *__pyx_pf_4pcap_4pcap_8set_rawfilter(struct __pyx_obj_4pcap_pcap
  *         cdef bpf_program fcode
  * 
  *         free(self.__filter)             # <<<<<<<<<<<<<<
- *         self.__filter = "Raw filter"
+ *         self.__filter = strdup("Raw filter")
  *         insn_len = len(insn_list)
  */
   free(__pyx_v_self->__pyx___filter);
@@ -2748,15 +2742,15 @@ static PyObject *__pyx_pf_4pcap_4pcap_8set_rawfilter(struct __pyx_obj_4pcap_pcap
   /* "pcap.pyx":280
  * 
  *         free(self.__filter)
- *         self.__filter = "Raw filter"             # <<<<<<<<<<<<<<
+ *         self.__filter = strdup("Raw filter")             # <<<<<<<<<<<<<<
  *         insn_len = len(insn_list)
  *         fcode.bf_insns = <bpf_insn *>malloc(insn_len * sizeof(bpf_insn))
  */
-  __pyx_v_self->__pyx___filter = __pyx_k_Raw_filter;
+  __pyx_v_self->__pyx___filter = strdup(__pyx_k_Raw_filter);
 
   /* "pcap.pyx":281
  *         free(self.__filter)
- *         self.__filter = "Raw filter"
+ *         self.__filter = strdup("Raw filter")
  *         insn_len = len(insn_list)             # <<<<<<<<<<<<<<
  *         fcode.bf_insns = <bpf_insn *>malloc(insn_len * sizeof(bpf_insn))
  *         if not fcode.bf_insns:
@@ -2765,7 +2759,7 @@ static PyObject *__pyx_pf_4pcap_4pcap_8set_rawfilter(struct __pyx_obj_4pcap_pcap
   __pyx_v_insn_len = __pyx_t_1;
 
   /* "pcap.pyx":282
- *         self.__filter = "Raw filter"
+ *         self.__filter = strdup("Raw filter")
  *         insn_len = len(insn_list)
  *         fcode.bf_insns = <bpf_insn *>malloc(insn_len * sizeof(bpf_insn))             # <<<<<<<<<<<<<<
  *         if not fcode.bf_insns:
@@ -6032,7 +6026,7 @@ PyMODINIT_FUNC PyInit_pcap(void)
  * 
  * import sys             # <<<<<<<<<<<<<<
  * import struct
- * from libc.stdlib cimport malloc
+ * 
  */
   __pyx_t_1 = __Pyx_Import(__pyx_n_s_sys, 0, -1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 19; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
@@ -6043,8 +6037,8 @@ PyMODINIT_FUNC PyInit_pcap(void)
  * 
  * import sys
  * import struct             # <<<<<<<<<<<<<<
- * from libc.stdlib cimport malloc
  * 
+ * cdef extern from "Python.h":
  */
   __pyx_t_1 = __Pyx_Import(__pyx_n_s_struct, 0, -1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 20; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
