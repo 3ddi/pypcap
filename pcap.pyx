@@ -18,6 +18,7 @@ __version__ = '1.1'
 
 import sys
 import struct
+from libc.stdlib cimport malloc
 
 cdef extern from "Python.h":
     object PyBuffer_FromMemory(char *s, int len)
@@ -29,8 +30,12 @@ cdef extern from "Python.h":
     
 cdef extern from "pcap.h":
     struct bpf_insn:
-        int __xxx
+        unsigned short code
+        unsigned char jt
+        unsigned char jf
+        long k
     struct bpf_program:
+        unsigned int bf_len
         bpf_insn *bf_insns
     struct bpf_timeval:
         unsigned int tv_sec
@@ -251,7 +256,42 @@ cdef class pcap:
         if pcap_setfilter(self.__pcap, &fcode) < 0:
             raise OSError, pcap_geterr(self.__pcap)
         pcap_freecode(&fcode)
-		
+
+    def get_compile(self, value, optimize=1):
+        """Compile and return BPF-format packet filter."""
+        cdef bpf_program fcode
+        cdef int i
+        insns_list = []
+        if pcap_compile(self.__pcap, &fcode, value, optimize, 0) < 0:
+            raise OSError, pcap_geterr(self.__pcap)
+        print fcode.bf_len
+        for i in range(fcode.bf_len):
+            insns_list.append((fcode.bf_insns[i].code, fcode.bf_insns[i].jt, fcode.bf_insns[i].jf, fcode.bf_insns[i].k))
+        pcap_freecode(&fcode)
+        return insns_list
+
+    def set_rawfilter(self, insn_list):
+        """Set a RAW BPF-format packet capture filter."""
+        cdef int i
+        cdef unsigned int insn_len
+        cdef bpf_program fcode
+
+        free(self.__filter)
+        self.__filter = "Raw filter"
+        insn_len = len(insn_list)
+        fcode.bf_insns = <bpf_insn *>malloc(insn_len * sizeof(bpf_insn))
+        if not fcode.bf_insns:
+            raise MemoryError()
+        fcode.bf_len = insn_len
+        for i in range(insn_len):
+            fcode.bf_insns[i].code = insn_list[i][0]
+            fcode.bf_insns[i].jt = insn_list[i][1]
+            fcode.bf_insns[i].jf = insn_list[i][2]
+            fcode.bf_insns[i].k = insn_list[i][3]
+        if pcap_setfilter(self.__pcap, &fcode) < 0:
+            raise OSError, pcap_geterr(self.__pcap)
+        pcap_freecode(&fcode)
+
     def setdirection(self, direction):
         """Set capture direction."""
         ret = pcap_ex_setdirection(self.__pcap, direction)
